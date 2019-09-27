@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.Mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.huang.Bean.User">
+    <id column="t_id" jdbcType="INTEGER" property="tId" />
+    <result column="t_username" jdbcType="VARCHAR" property="tUsername" />
+    <result column="t_account" jdbcType="VARCHAR" property="tAccount" />
+    <result column="t_password" jdbcType="VARCHAR" property="tPassword" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    t_id, t_username, t_account, t_password
+  </sql>
+  <select id="selectByExample" parameterType="com.huang.Bean.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_user
+    where t_id = #{tId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_user
+    where t_id = #{tId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.huang.Bean.UserExample">
+    delete from tb_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.huang.Bean.User">
+    insert into tb_user (t_id, t_username, t_account, 
+      t_password)
+    values (#{tId,jdbcType=INTEGER}, #{tUsername,jdbcType=VARCHAR}, #{tAccount,jdbcType=VARCHAR}, 
+      #{tPassword,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huang.Bean.User">
+    insert into tb_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tId != null">
+        t_id,
+      </if>
+      <if test="tUsername != null">
+        t_username,
+      </if>
+      <if test="tAccount != null">
+        t_account,
+      </if>
+      <if test="tPassword != null">
+        t_password,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tId != null">
+        #{tId,jdbcType=INTEGER},
+      </if>
+      <if test="tUsername != null">
+        #{tUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="tAccount != null">
+        #{tAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="tPassword != null">
+        #{tPassword,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.huang.Bean.UserExample" resultType="java.lang.Long">
+    select count(*) from tb_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_user
+    <set>
+      <if test="record.tId != null">
+        t_id = #{record.tId,jdbcType=INTEGER},
+      </if>
+      <if test="record.tUsername != null">
+        t_username = #{record.tUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tAccount != null">
+        t_account = #{record.tAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tPassword != null">
+        t_password = #{record.tPassword,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_user
+    set t_id = #{record.tId,jdbcType=INTEGER},
+      t_username = #{record.tUsername,jdbcType=VARCHAR},
+      t_account = #{record.tAccount,jdbcType=VARCHAR},
+      t_password = #{record.tPassword,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huang.Bean.User">
+    update tb_user
+    <set>
+      <if test="tUsername != null">
+        t_username = #{tUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="tAccount != null">
+        t_account = #{tAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="tPassword != null">
+        t_password = #{tPassword,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huang.Bean.User">
+    update tb_user
+    set t_username = #{tUsername,jdbcType=VARCHAR},
+      t_account = #{tAccount,jdbcType=VARCHAR},
+      t_password = #{tPassword,jdbcType=VARCHAR}
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+</mapper>

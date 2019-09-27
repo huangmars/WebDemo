@@ -19,7 +19,7 @@ public class MGBTest {
     public void gennerator() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
-        File configFile = new File("src/main/resources/mgb.xml");
+        File configFile = new File("src/main/resources/MGB.xml");
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(configFile);
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);

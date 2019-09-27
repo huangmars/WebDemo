@@ -37,9 +37,7 @@
         </javaClientGenerator>
 
         <!-- 指定每个表生成策略 -->
-        <table schema="DB2ADMIN" tableName="tb_emp" domainObjectName="Employee">
-        </table>
-        <table schema="DB2ADMIN" tableName="tb_dept" domainObjectName="Department">
+        <table schema="DB2ADMIN" tableName="tb_user" domainObjectName="User">
         </table>
     </context>
 </generatorConfiguration>
