@@ -1,5 +1,6 @@
 package com.huang.Service;
 import com.huang.Bean.Employee;
+import com.huang.Bean.EmployeeExample;
 import com.huang.Mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper employeeMapper;
 
     @Override
-    public void addEmployee(Employee employee) {
-        employeeMapper.insertSelective(employee);
+    public int addEmployee(Employee employee) {
+        return employeeMapper.insertSelective(employee);
     }
 
     @Transactional(readOnly = true)
@@ -25,5 +26,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     public List<Employee> selectAllEmployee() {
         return employeeMapper.selectByExampleWithDept(null);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkEmployee(String empname) {
+        EmployeeExample employeeExample = new EmployeeExample();
+        employeeExample.createCriteria().andEmpNameEqualTo(empname);
+        long count = employeeMapper.countByExample(employeeExample);
+        return count == 0;
     }
 }

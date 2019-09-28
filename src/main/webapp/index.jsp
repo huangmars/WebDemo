@@ -4,7 +4,7 @@
 <head>
     <title>登陆页面</title>
     <%
-        pageContext.setAttribute("APP_PATH", request.getContextPath());
+        pageContext.setAttribute("APP_PATH",request.getContextPath());
     %>
     <link rel="stylesheet" type="text/css" href="${APP_PATH}/css/styles.css">
 </head>

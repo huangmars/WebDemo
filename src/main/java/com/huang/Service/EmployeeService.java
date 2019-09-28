@@ -3,7 +3,8 @@ import com.huang.Bean.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    public void addEmployee(Employee employee);
+    public int addEmployee(Employee employee);
     public Employee selectEmployeeById(Integer id);
     public List<Employee> selectAllEmployee();
+    public boolean checkEmployee(String empname);
 }
