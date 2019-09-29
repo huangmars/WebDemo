@@ -1,10 +1,14 @@
-$(function() {
+﻿$(function() {
     toPage(1);
 
     $("#btn_emp_add_model").click(function () {
-        //1.点击新增按钮后，先查询部门信息
+        //1.每次关闭表单后重新打开表单需要清空表单的数据
+        $("#emp_add_model_form")[0].reset();
+        //2.为姓名输入框绑定一个change事件,发送ajax请求,检测是否用户已经注册
+        checkSameEmployee();
+        //3.点击新增按钮后，先查询部门信息
         getDepts($("#dId select"));
-        //2.弹出模态框
+        //4.弹出模态框
         $("#emp_add_model").modal({
             backdrop:"static"
         });
@@ -54,7 +58,7 @@ function checkSameEmployee() {
             },
             type : "POST",
             success : function(result) {
-                if (result.code == 200) {
+                if (result.responseStatus == 200) {
                     show_validate_message($("#empName"), "success", "");
                     $("#btn-save").attr("ajax-value", true);
                 } else {
@@ -68,16 +72,17 @@ function checkSameEmployee() {
 
 //校验表单数据
 function validate() {
+    //验证姓名，但是其实验证的格式时用户名
     var empName = $("#empName").val();
     var regName = /^[\u4E00-\u9FA5A-Za-z]+$/;
     if (!regName.test(empName)) {
-        alert("123");
         show_validate_message($("#empName"), "error", "姓名格式不正确")
         return false;
     } else {
         show_validate_message($("#empName"), "success", "")
     }
 
+    //验证姓名，但是其实验证的格式时用户名
     var email = $("#email").val();
     var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     if (!regEmail.test(email)) {
@@ -86,7 +91,6 @@ function validate() {
     } else {
         show_validate_message($("#email"), "success", "")
         if ($("#btn-save").attr("ajax-value") == false) {
-            alert("不成功");
             return false;
         }
         return true;

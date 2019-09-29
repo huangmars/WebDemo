@@ -40,6 +40,7 @@
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>number</th>
                     <th>empName</th>
                     <th>gender</th>
                     <th>email</th>
