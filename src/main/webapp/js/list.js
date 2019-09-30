@@ -25,7 +25,110 @@
         }
     })
 
+    $(document).on("click", ".edit", function() {
+        //1.修改前查出部门信息
+        getDepts($("#dId1 select"));
+        //2.修改前查出员工信息
+        getEmp($(this).attr("edit-id"));
+        //3.把员工id添加到保存按钮上去，方便后面保存时使用
+        $("#btn-update").attr("edit-id", $(this).attr("edit-id"));
+        //4.弹出模态框
+        $("#emp_modify_model").modal({
+            backdrop:"static"
+        });
+    })
+
+    $("#btn-update").click(function() {
+                // 验证邮箱是否合法
+                var email = $("#email1").val();
+                var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+                if (!regEmail.test(email)) {
+                    show_validate_message($("#email1"), "error", "邮箱格式不正确")
+                    return false;
+                } else {
+                    show_validate_message($("#email1"), "success", "")
+                    if ($("#btn-update").attr("ajax-value") == false) {
+                        alert("不成功");
+                        return false;
+                    }
+                    // 发送ajax请求保存员工
+                    var APP_PATH = $("#APP_PATH").val();
+                    $.ajax({
+                            url : APP_PATH + "/emp/" + $(this).attr("edit-id"),
+                            type : "PUT",
+                            data : $("#form2").serialize(),
+                            /*data : $("#form2").serialize() + "&_method=PUT",*/
+                            success : function(result) {
+                                alert(result.msg);
+                                $('#emp_modify_model').modal('hide');// 关闭模态框
+                                toPage(1)// 回到首页
+                            }
+                        });
+                    return true;
+                }
+
+    });
+
+    $(document).on("click", ".delete", function() {// 为每个删除按钮绑定事件
+        var flag = confirm("是否删除" + $(this).attr("deleteName") + "?");
+        if (flag == true) {
+            deleteEmployee($(this));
+        }
+    });
+
+    $(document).on("click", ".check_item", function() {
+        // 判断选中的元素是不是全部,是的话checkAll要勾上
+        $("#checkAll").prop("checked", $(".check_item:checked").length == $(".check_item").length);
+    });
+
+    $("#checkAll").click(function () {
+        $(".check_item").prop("checked",$(this).prop("checked"))
+    })
+
+    $("#deleteAll").click(function() {
+        if($(".check_item:checked").length!=0){
+            deleteAll();
+        }else{
+            alert("您还未选择任何删除");
+        }
+    });
 });
+
+// 删除员工的信息
+function deleteEmployee(element) {
+    var APP_PATH = $("#APP_PATH").val();
+    $.ajax({
+        url : APP_PATH + "/emp/" + element.attr("delete-id"),
+        type : "POST",
+        data : "_method=delete",
+        success : function(result) {
+            alert(result.responseMessage);
+            toPage(1);// 返回首页
+        }
+
+    });
+}
+
+// 获取修改员工的信息
+function getEmp(id) {
+    var APP_PATH = $("#APP_PATH").val();
+    $.ajax({
+        url : APP_PATH + "/emp/" + id,
+        type : "GET",
+        success : function(result) {
+            console.log(result)
+            var empName = result.responseData.emp.empName;
+            var email = result.responseData.emp.email;
+            var gender = result.responseData.emp.gender;
+            var dId = result.responseData.emp.dId;
+            $("#empName1").text(empName);
+            $("#email1").val(email);
+            $("#emp_modify_model input[name=gender]").val([ gender ]);
+            $("#emp_modify_model select").select([ dId ]);
+        }
+    });
+}
 
 //保存员工
 function save() {
@@ -35,12 +138,12 @@ function save() {
         type : "POST",
         data : $("#emp_add_model_form").serialize(),
         success : function(result) {
-            console.log(result)
             if (result.responseStatus == 200) {
                 //关闭模态框
                 $('#emp_add_model').modal('hide');
             } else {
-                alert(result.responseMessage);
+                //alert(result.responseMessage);
+                alert(result.responseMessage + result.responseData.error);
             }
         }
     });
@@ -123,7 +226,6 @@ function getDepts(element) {
         url : APP_PATH + "/depts",
         type : "GET",
         success : function(result) {
-            console.log(result);
             buildDepts(result, element);
         }
     });
@@ -262,3 +364,27 @@ function buid_page_line(result) {
     $("#page_line").append(nav);
 }
 
+// 批量删除
+function deleteAll() {
+    var empNames = "";
+    var delIds = "";
+    $.each($(".check_item:checked"), function() {
+        empNames += $(this).parents("tr").find("td:eq(2)").text() + ","
+        delIds += $(this).parents("tr").find("td:eq(1)").text() + "-";
+    })
+    empNames = empNames.substring(0, empNames.length - 1);
+    delIds =delIds.substring(0, delIds.length - 1);
+    var flag = confirm("确认删除" + empNames + "?");
+    if (flag) {
+        var APP_PATH = $("#APP_PATH").val();
+        $.ajax({
+            url : APP_PATH + "/emp/" + delIds,
+            type : "POST",
+            data : "_method=delete",
+            success : function(result) {
+                alert(result.responseMessage);
+                toPage(1);// 返回首页
+            }
+        });
+    }
+}

@@ -35,4 +35,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         long count = employeeMapper.countByExample(employeeExample);
         return count == 0;
     }
+
+    @Override
+    public int deleteEmployeeById(Integer id) {
+
+        return employeeMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int deleteEmployeeBatch(List<Integer> ids) {
+        EmployeeExample employeeExample = new EmployeeExample();
+        employeeExample.createCriteria().andEmpIdIn(ids);
+        return employeeMapper.deleteByExample(employeeExample);
+    }
+
+    @Override
+    public void updateEmployee(Employee employee) {
+        employeeMapper.updateByPrimaryKeySelective(employee);
+    }
+
+
 }

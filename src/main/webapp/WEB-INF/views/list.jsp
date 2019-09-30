@@ -27,8 +27,8 @@
                 <button class=" btn btn-danger btn-sm" id="btn_emp_add_model">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span>新增
                 </button>
-                <button class="btn btn-primary btn-sm">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                <button class="btn btn-primary btn-sm" id="deleteAll">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true" ></span>删除
                 </button>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <table class="table table-hover" id="emps_table">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th><input type='checkbox' id="checkAll"/></th>
                     <th>number</th>
                     <th>empName</th>
                     <th>gender</th>
@@ -111,6 +111,64 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="btn_emp_save" ajax-value="true">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 修改界面(模态框)-->
+<div class="modal fade" id="emp_modify_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel1">修改员工</h4>
+            </div>
+            <!-- 员工修改 -->
+            <div class="modal-body">
+                <form class="form-horizontal" id="form2">
+                    <div class="form-group">
+                        <label for="empName" class="col-sm-2 control-label">姓名:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="empName1"
+                               name="empName" placeholder="姓名"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">性别:</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input type="radio" name="gender"  value="M" checked="checked">男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" value="F"> 女
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="col-sm-2 control-label">邮箱:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="email1" name="email" placeholder="邮箱">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dId" class="col-sm-2 control-label">部门:</label>
+                        <div class="col-sm-10" id="dId1">
+                            <select class="form-control" name="dId"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btn-update" ajax-value="true">更新</button>
             </div>
         </div>
     </div>

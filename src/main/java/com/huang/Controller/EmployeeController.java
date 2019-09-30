@@ -6,10 +6,14 @@ import com.huang.Bean.ResponseMessageBean;
 import com.huang.Service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.BindException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,6 +27,48 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
 
+    /**
+     * @param
+     * @return Message
+     * @description:单个批量删除 单个删除:1 批量删除:1-2-3
+     */
+    @DeleteMapping(value = "/emp/{ids}")
+    @ResponseBody
+    public ResponseMessageBean deleteEmployee(@PathVariable("ids") String ids) {
+        int count = 0;
+        if (ids.contains("-")){
+            List<Integer> emp_ids = new ArrayList<>();
+            String[] ids_str = ids.split("-");
+            for (String id_str :ids_str){
+                emp_ids.add(Integer.parseInt(id_str));
+            }
+            count = employeeService.deleteEmployeeBatch(emp_ids);
+        }else {
+            count = employeeService.deleteEmployeeById(Integer.parseInt(ids));
+        }
+
+        if (count !=0){
+            return ResponseMessageBean.Handlesuccess();
+
+        }else {
+            return ResponseMessageBean.Handlefailure();
+        }
+    }
+
+   /* 员工更新 这里ajax请求直接发put请求而不是post请求,那么所有的参数都会获取不到,因为tomcat只会封装post的数据
+    也就是说request.getParameter("empId")为空,springmvc也无法封装Bean
+    解决方法: 1.发送post方法,通过HiddenHttpMethodFilter
+            2.发送put请求,通过HttpPutFormContentFilter*/
+    //此处url参数为empId，要与实体类一致，才能封装，否则id不能传递进来，为null
+    @PutMapping(value = "/emp/{empId}")
+    @ResponseBody
+    public ResponseMessageBean UpdateEmployee(Employee employee) {
+        logger.info(employee.toString());
+        employeeService.updateEmployee(employee);
+        return ResponseMessageBean.Handlesuccess();
+    }
+
+
     @PostMapping(value = "/checkSameEmployee")
     @ResponseBody
     public ResponseMessageBean checkEmployee(String empName){
@@ -34,9 +80,28 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping(value = "/emp/{id}")
+    @ResponseBody
+    public ResponseMessageBean getEmployee(@PathVariable("id") Integer id){
+        Employee employee = employeeService.selectEmployeeById(id);
+        if (employee!=null){
+            return ResponseMessageBean.Handlesuccess().addresponseData("emp",employee);
+        }else {
+            return ResponseMessageBean.Handlefailure();
+        }
+    }
+
     @PostMapping(value = "/emp")
     @ResponseBody
-    public ResponseMessageBean addEmployee(Employee employee){
+    public ResponseMessageBean addEmployee(@Valid Employee employee, BindingResult result){
+        if (result.hasErrors()){
+            HashMap<String,Object> errorHashMap = new HashMap<>();
+            for(FieldError fieldError : result.getFieldErrors()){
+                errorHashMap.put(fieldError.getField(),fieldError.getDefaultMessage());
+            }
+            return ResponseMessageBean.Handlefailure().addresponseData("error",errorHashMap);
+        }
+
         System.out.println(employee.toString());
         int count = employeeService.addEmployee(employee);
         if (count==1){

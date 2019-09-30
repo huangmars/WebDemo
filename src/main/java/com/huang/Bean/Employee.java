@@ -1,12 +1,20 @@
 package com.huang.Bean;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Pattern;
+
 public class Employee {
     private Integer empId;
 
+    @Pattern(regexp = "^[a-zA-Z]\\w{3,15}$",message = "xxxxx")
     private String empName;
 
     private String gender;
 
+    @Email(message = "zzzzzzzzzz")
+    @NotEmpty
     private String email;
 
     private Integer dId;
